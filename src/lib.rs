@@ -32,7 +32,8 @@ macro_rules! impl_display {
     };
 }
 
-#[cfg(feature = "approx-eq")] pub use float_cmp::{ApproxEq, ApproxEqUlps};
+#[cfg(feature = "approx-eq")]
+pub use float_cmp::{ApproxEq, ApproxEqUlps};
 
 #[cfg(feature = "approx-eq")]
 macro_rules! impl_approx_32 {
@@ -496,13 +497,13 @@ impl NormalizedF32 {
     /// Returns the value as a `u8`.
     #[inline]
     pub fn to_u8(&self) -> u8 {
-        (self.0.0 * 255.0 + 0.5) as u8
+        ((self.0).0 * 255.0 + 0.5) as u8
     }
 
     /// Returns the value as a `u16`.
     #[inline]
     pub fn to_u16(&self) -> u16 {
-        (self.0.0 * 65535.0 + 0.5) as u16
+        ((self.0).0 * 65535.0 + 0.5) as u16
     }
 }
 
@@ -511,7 +512,7 @@ impl core::ops::Mul<NormalizedF32> for NormalizedF32 {
 
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::new_clamped(self.0.0 * rhs.0.0)
+        Self::new_clamped((self.0).0 * (rhs.0).0)
     }
 }
 
@@ -588,13 +589,13 @@ impl NormalizedF64 {
     /// Returns the value as a `u8`.
     #[inline]
     pub fn to_u8(&self) -> u8 {
-        (self.0.0 * 255.0 + 0.5) as u8
+        ((self.0).0 * 255.0 + 0.5) as u8
     }
 
     /// Returns the value as a `u16`.
     #[inline]
     pub fn to_u16(&self) -> u16 {
-        (self.0.0 * 65535.0 + 0.5) as u16
+        ((self.0).0 * 65535.0 + 0.5) as u16
     }
 }
 
@@ -603,7 +604,7 @@ impl core::ops::Mul<NormalizedF64> for NormalizedF64 {
 
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::new_clamped(self.0.0 * rhs.0.0)
+        Self::new_clamped((self.0).0 * (rhs.0).0)
     }
 }
 
