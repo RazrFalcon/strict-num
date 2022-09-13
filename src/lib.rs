@@ -166,6 +166,13 @@ impl core::hash::Hash for FiniteF32 {
     }
 }
 
+impl PartialEq<f32> for FiniteF32 {
+    #[inline]
+    fn eq(&self, other: &f32) -> bool {
+        self.get() == *other
+    }
+}
+
 impl_display!(FiniteF32);
 impl_approx_32!(FiniteF32);
 
@@ -242,6 +249,13 @@ impl core::hash::Hash for FiniteF64 {
     }
 }
 
+impl PartialEq<f64> for FiniteF64 {
+    #[inline]
+    fn eq(&self, other: &f64) -> bool {
+        self.get() == *other
+    }
+}
+
 impl_display!(FiniteF64);
 impl_approx_64!(FiniteF64);
 
@@ -286,6 +300,13 @@ impl PositiveF32 {
     #[inline]
     pub const fn get_finite(&self) -> FiniteF32 {
         self.0
+    }
+}
+
+impl PartialEq<f32> for PositiveF32 {
+    #[inline]
+    fn eq(&self, other: &f32) -> bool {
+        self.get() == *other
     }
 }
 
@@ -336,6 +357,13 @@ impl PositiveF64 {
     }
 }
 
+impl PartialEq<f64> for PositiveF64 {
+    #[inline]
+    fn eq(&self, other: &f64) -> bool {
+        self.get() == *other
+    }
+}
+
 impl_display!(PositiveF64);
 impl_approx_64!(PositiveF64);
 
@@ -380,6 +408,13 @@ impl NonZeroPositiveF32 {
     }
 }
 
+impl PartialEq<f32> for NonZeroPositiveF32 {
+    #[inline]
+    fn eq(&self, other: &f32) -> bool {
+        self.get() == *other
+    }
+}
+
 impl_display!(NonZeroPositiveF32);
 impl_approx_32!(NonZeroPositiveF32);
 
@@ -421,6 +456,13 @@ impl NonZeroPositiveF64 {
     #[inline]
     pub const fn get_finite(&self) -> FiniteF64 {
         self.0
+    }
+}
+
+impl PartialEq<f64> for NonZeroPositiveF64 {
+    #[inline]
+    fn eq(&self, other: &f64) -> bool {
+        self.get() == *other
     }
 }
 
@@ -516,6 +558,13 @@ impl core::ops::Mul<NormalizedF32> for NormalizedF32 {
     }
 }
 
+impl PartialEq<f32> for NormalizedF32 {
+    #[inline]
+    fn eq(&self, other: &f32) -> bool {
+        self.get() == *other
+    }
+}
+
 impl_display!(NormalizedF32);
 impl_approx_32!(NormalizedF32);
 
@@ -605,6 +654,13 @@ impl core::ops::Mul<NormalizedF64> for NormalizedF64 {
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
         Self::new_clamped((self.0).0 * (rhs.0).0)
+    }
+}
+
+impl PartialEq<f64> for NormalizedF64 {
+    #[inline]
+    fn eq(&self, other: &f64) -> bool {
+        self.get() == *other
     }
 }
 
