@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   // instead of
   assert_eq!(n.get(), 1.0);
   ```
+- Reexport `float_cmp::Ulps`
 
 ## 0.1.0 - 2022-07-23
 ### Added

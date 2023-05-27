@@ -33,7 +33,7 @@ macro_rules! impl_display {
 }
 
 #[cfg(feature = "approx-eq")]
-pub use float_cmp::{ApproxEq, ApproxEqUlps};
+pub use float_cmp::{ApproxEq, ApproxEqUlps, Ulps};
 
 #[cfg(feature = "approx-eq")]
 macro_rules! impl_approx_32 {
