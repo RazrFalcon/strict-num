@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.1.1]
 ### Added
 - `PartialEq<{float}>` for all types. Meaning one can write:
   ```rust
@@ -19,4 +21,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Initial version
 
-[Unreleased]: https://github.com/RazrFalcon/strict-num/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/RazrFalcon/strict-num/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/RazrFalcon/strict-num/compare/v0.1.0...v0.1.1
