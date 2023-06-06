@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0]
+### Added
+- Serde `derive(Serialize,Deserialize)` for all types when using the `serde` feature.
+
 ## [0.1.1]
 ### Added
 - `PartialEq<{float}>` for all types. Meaning one can write:
@@ -21,5 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Initial version
 
-[Unreleased]: https://github.com/RazrFalcon/strict-num/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/RazrFalcon/strict-num/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/RazrFalcon/strict-num/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RazrFalcon/strict-num/compare/v0.1.0...v0.1.1

@@ -1,6 +1,6 @@
 [package]
 name = "strict-num"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Yevhenii Reizner <razrfalcon@gmail.com>"]
 license = "MIT"
 description = "A collection of bounded numeric types"
@@ -11,7 +11,13 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-float-cmp = { version = "0.9", default-features = false, features = ["std"], optional = true }
+float-cmp = { version = "0.9", optional = true, default-features = false, features = [
+    "std",
+] }
+serde = { version = "1.0.163", optional = true, default-features = false, features = [
+    "derive",
+] }
+
 
 [features]
 default = ["approx-eq"]
@@ -20,3 +26,4 @@ default = ["approx-eq"]
 # via the `float-cmp` crate.
 # Disables `no_std`.
 approx-eq = ["float-cmp"]
+serde = ["dep:serde"]

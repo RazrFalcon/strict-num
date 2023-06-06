@@ -93,9 +93,13 @@ macro_rules! impl_approx_64 {
     ($t:ident) => {};
 }
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 /// An immutable, finite `f32`.
 ///
 /// Unlike `f32`, implements `Ord`, `PartialOrd` and `Hash`.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF32(f32);
@@ -179,6 +183,7 @@ impl_approx_32!(FiniteF32);
 /// An immutable, finite `f64`.
 ///
 /// Unlike `f64`, implements `Ord`, `PartialOrd` and `Hash`.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF64(f64);
@@ -260,6 +265,7 @@ impl_display!(FiniteF64);
 impl_approx_64!(FiniteF64);
 
 /// An immutable, finite `f32` that is known to be >= 0.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
 #[repr(transparent)]
 pub struct PositiveF32(FiniteF32);
@@ -314,6 +320,7 @@ impl_display!(PositiveF32);
 impl_approx_32!(PositiveF32);
 
 /// An immutable, finite `f64` that is known to be >= 0.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
 #[repr(transparent)]
 pub struct PositiveF64(FiniteF64);
@@ -368,6 +375,7 @@ impl_display!(PositiveF64);
 impl_approx_64!(PositiveF64);
 
 /// An immutable, finite `f32` that is known to be > 0.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF32(FiniteF32);
@@ -419,6 +427,7 @@ impl_display!(NonZeroPositiveF32);
 impl_approx_32!(NonZeroPositiveF32);
 
 /// An immutable, finite `f64` that is known to be > 0.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF64(FiniteF64);
@@ -470,6 +479,7 @@ impl_display!(NonZeroPositiveF64);
 impl_approx_64!(NonZeroPositiveF64);
 
 /// An immutable, finite `f32` in a 0..=1 range.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NormalizedF32(FiniteF32);
@@ -569,6 +579,7 @@ impl_display!(NormalizedF32);
 impl_approx_32!(NormalizedF32);
 
 /// An immutable, finite `f64` in a 0..=1 range.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NormalizedF64(FiniteF64);
