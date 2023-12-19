@@ -14,6 +14,9 @@ edition = "2018"
 float-cmp = { version = "0.9", default-features = false, features = ["std"], optional = true }
 serde = { version = "1", optional = true }
 
+[dev-dependencies]
+serde_json = "1"
+
 [features]
 default = ["approx-eq"]
 
