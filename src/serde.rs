@@ -123,7 +123,7 @@ impl_deserialize_num! {
 }
 
 impl_deserialize_num! {
-    "a non zero positive ",
+    "a nonzero positive ",
     f32, NonZeroPositiveF32, deserialize_f32
     num_self!(f32:visit_f32);
     num_as_self!(f64:visit_f64);
@@ -132,7 +132,7 @@ impl_deserialize_num! {
 }
 
 impl_deserialize_num! {
-    "a non zero positive ",
+    "a nonzero positive ",
     f64, NonZeroPositiveF64, deserialize_f64
     num_self!(f64:visit_f64);
     num_as_self!(f32:visit_f32);
