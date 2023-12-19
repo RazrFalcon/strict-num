@@ -12,6 +12,7 @@ edition = "2018"
 
 [dependencies]
 float-cmp = { version = "0.9", default-features = false, features = ["std"], optional = true }
+serde = { version = "1", optional = true }
 
 [features]
 default = ["approx-eq"]
@@ -20,3 +21,5 @@ default = ["approx-eq"]
 # via the `float-cmp` crate.
 # Disables `no_std`.
 approx-eq = ["float-cmp"]
+
+serde = ["dep:serde"]
