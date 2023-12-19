@@ -24,5 +24,3 @@ default = ["approx-eq"]
 # via the `float-cmp` crate.
 # Disables `no_std`.
 approx-eq = ["float-cmp"]
-
-serde = ["dep:serde"]
