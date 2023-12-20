@@ -2,7 +2,7 @@
 ![Build Status](https://github.com/RazrFalcon/strict-num/workflows/Build/badge.svg)
 [![Crates.io](https://img.shields.io/crates/v/strict-num.svg)](https://crates.io/crates/strict-num)
 [![Documentation](https://docs.rs/strict-num/badge.svg)](https://docs.rs/strict-num)
-[![Rust 1.35+](https://img.shields.io/badge/rust-1.35+-orange.svg)](https://www.rust-lang.org)
+[![Rust 1.56+](https://img.shields.io/badge/rust-1.56+-orange.svg)](https://www.rust-lang.org)
 
 A collection of bounded numeric types.
 
