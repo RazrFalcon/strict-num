@@ -21,6 +21,9 @@ since it's guaranteed that they all are finite.
 #![deny(missing_copy_implementations)]
 #![deny(missing_debug_implementations)]
 
+#[cfg(feature = "serde")]
+mod serde;
+
 macro_rules! impl_display {
     ($t:ident) => {
         impl core::fmt::Display for $t {
