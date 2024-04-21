@@ -491,7 +491,7 @@ impl NormalizedF32 {
     /// Creates a [`NormalizedF32`] if the given value is in a 0..=1 range.
     #[inline]
     pub fn new(n: f32) -> Option<Self> {
-        if n.is_finite() && n >= 0.0 && n <= 1.0 {
+        if n.is_finite() && (0.0..=1.0).contains(&n) {
             Some(NormalizedF32(FiniteF32(n)))
         } else {
             None
@@ -590,7 +590,7 @@ impl NormalizedF64 {
     /// Creates a [`NormalizedF64`] if the given value is in a 0..=1 range.
     #[inline]
     pub fn new(n: f64) -> Option<Self> {
-        if n >= 0.0 && n <= 1.0 {
+        if (0.0..=1.0).contains(&n) {
             Some(NormalizedF64(FiniteF64(n)))
         } else {
             None
