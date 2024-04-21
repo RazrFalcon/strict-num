@@ -12,8 +12,8 @@ Includes:
 - [`NormalizedF32`]
 - [`NormalizedF64`]
 
-Unlike `f32`/`f64`, all float types implement `Ord`, `PartialOrd` and `Hash`,
-since it's guaranteed that they all are finite.
+Unlike `f32`/`f64`, all float types implement `Eq`, `Ord` and `Hash`, since
+it's guaranteed that they all are finite.
 */
 
 #![no_std]
@@ -98,7 +98,7 @@ macro_rules! impl_approx_64 {
 
 /// An immutable, finite `f32`.
 ///
-/// Unlike `f32`, implements `Ord`, `PartialOrd` and `Hash`.
+/// Unlike `f32`, implements `Eq`, `Ord` and `Hash`.
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF32(f32);
@@ -181,7 +181,7 @@ impl_approx_32!(FiniteF32);
 
 /// An immutable, finite `f64`.
 ///
-/// Unlike `f64`, implements `Ord`, `PartialOrd` and `Hash`.
+/// Unlike `f64`, implements `Eq`, `Ord` and `Hash`.
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF64(f64);
