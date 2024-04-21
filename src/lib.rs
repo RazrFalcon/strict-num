@@ -14,6 +14,11 @@ Includes:
 
 Unlike [`f32`] and [`f64`], all these types implement [`Eq`], [`Ord`] and
 [`Hash`], since it's guaranteed that they all are finite.
+
+# Features
+- `approx-eq` implements the `ApproxEq` and `ApproxEqUlps` traits for floating
+  point numbers via the `float-cmp` crate. This feature disables `no_std`.
+- `serde` adds support for Serde.
 */
 
 #![no_std]
