@@ -12,8 +12,8 @@ Includes:
 - [`NormalizedF32`]
 - [`NormalizedF64`]
 
-Unlike `f32`/`f64`, all float types implement `Eq`, `Ord` and `Hash`, since
-it's guaranteed that they all are finite.
+Unlike [`f32`] and [`f64`], all these types implement [`Eq`], [`Ord`] and
+[`Hash`], since it's guaranteed that they all are finite.
 */
 
 #![no_std]
@@ -96,17 +96,17 @@ macro_rules! impl_approx_64 {
     ($t:ident) => {};
 }
 
-/// An immutable, finite `f32`.
+/// An immutable, finite [`f32`].
 ///
-/// Unlike `f32`, implements `Eq`, `Ord` and `Hash`.
+/// Unlike [`f32`], implements [`Eq`], [`Ord`] and [`Hash`].
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF32(f32);
 
 impl FiniteF32 {
-    /// Creates a finite `f32`.
+    /// Creates a finite [`f32`].
     ///
-    /// Returns `None` for NaN and infinity.
+    /// Returns [`None`] for `NaN` and infinity.
     #[inline]
     pub fn new(n: f32) -> Option<Self> {
         if n.is_finite() {
@@ -116,7 +116,7 @@ impl FiniteF32 {
         }
     }
 
-    /// Creates a finite `f32` without checking the value.
+    /// Creates a finite [`f32`] without checking the value.
     ///
     /// # Safety
     ///
@@ -179,17 +179,17 @@ impl PartialEq<f32> for FiniteF32 {
 impl_display!(FiniteF32);
 impl_approx_32!(FiniteF32);
 
-/// An immutable, finite `f64`.
+/// An immutable, finite [`f64`].
 ///
-/// Unlike `f64`, implements `Eq`, `Ord` and `Hash`.
+/// Unlike [`f64`], implements [`Eq`], [`Ord`] and [`Hash`].
 #[derive(Copy, Clone, Default, Debug)]
 #[repr(transparent)]
 pub struct FiniteF64(f64);
 
 impl FiniteF64 {
-    /// Creates a finite `f64`.
+    /// Creates a finite [`f64`].
     ///
-    /// Returns `None` for NaN and infinity.
+    /// Returns [`None`] for `NaN` and infinity.
     #[inline]
     pub fn new(n: f64) -> Option<Self> {
         if n.is_finite() {
@@ -199,7 +199,7 @@ impl FiniteF64 {
         }
     }
 
-    /// Creates a finite `f64` without checking the value.
+    /// Creates a finite [`f64`] without checking the value.
     ///
     /// # Safety
     ///
@@ -262,18 +262,18 @@ impl PartialEq<f64> for FiniteF64 {
 impl_display!(FiniteF64);
 impl_approx_64!(FiniteF64);
 
-/// An immutable, finite `f32` that is known to be >= 0.
+/// An immutable, finite [`f32`] that is known to be >= 0.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
 #[repr(transparent)]
 pub struct PositiveF32(FiniteF32);
 
 impl PositiveF32 {
-    /// A `PositiveF32` value initialized with zero.
+    /// A [`PositiveF32`] value initialized with zero.
     pub const ZERO: Self = PositiveF32(FiniteF32(0.0));
 
-    /// Creates a new `PositiveF32` if the given value is >= 0.
+    /// Creates a new [`PositiveF32`] if the given value is >= 0.
     ///
-    /// Returns `None` for negative, NaN and infinity.
+    /// Returns [`None`] for negative, `NaN` and infinity.
     #[inline]
     pub fn new(n: f32) -> Option<Self> {
         if n.is_finite() && n >= 0.0 {
@@ -283,7 +283,7 @@ impl PositiveF32 {
         }
     }
 
-    /// Creates a new `PositiveF32` without checking the value.
+    /// Creates a new [`PositiveF32`] without checking the value.
     ///
     /// # Safety
     ///
@@ -299,7 +299,7 @@ impl PositiveF32 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF32`.
+    /// Returns the value as a [`FiniteF32`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF32 {
         self.0
@@ -316,18 +316,18 @@ impl PartialEq<f32> for PositiveF32 {
 impl_display!(PositiveF32);
 impl_approx_32!(PositiveF32);
 
-/// An immutable, finite `f64` that is known to be >= 0.
+/// An immutable, finite [`f64`] that is known to be >= 0.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
 #[repr(transparent)]
 pub struct PositiveF64(FiniteF64);
 
 impl PositiveF64 {
-    /// A `PositiveF64` value initialized with zero.
+    /// A [`PositiveF64`] value initialized with zero.
     pub const ZERO: Self = PositiveF64(FiniteF64(0.0));
 
-    /// Creates a new `PositiveF64` if the given value is >= 0.
+    /// Creates a new [`PositiveF64`] if the given value is >= 0.
     ///
-    /// Returns `None` for negative, NaN and infinity.
+    /// Returns [`None`] for negative, `NaN` and infinity.
     #[inline]
     pub fn new(n: f64) -> Option<Self> {
         if n.is_finite() && n >= 0.0 {
@@ -337,7 +337,7 @@ impl PositiveF64 {
         }
     }
 
-    /// Creates a new `PositiveF64` without checking the value.
+    /// Creates a new [`PositiveF64`] without checking the value.
     ///
     /// # Safety
     ///
@@ -353,7 +353,7 @@ impl PositiveF64 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF64`.
+    /// Returns the value as a [`FiniteF64`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF64 {
         self.0
@@ -370,15 +370,15 @@ impl PartialEq<f64> for PositiveF64 {
 impl_display!(PositiveF64);
 impl_approx_64!(PositiveF64);
 
-/// An immutable, finite `f32` that is known to be > 0.
+/// An immutable, finite [`f32`] that is known to be > 0.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF32(FiniteF32);
 
 impl NonZeroPositiveF32 {
-    /// Creates a new `NonZeroPositiveF32` if the given value is > 0.
+    /// Creates a new [`NonZeroPositiveF32`] if the given value is > 0.
     ///
-    /// Returns `None` for negative, zero, NaN and infinity.
+    /// Returns [`None`] for negative, zero, `NaN` and infinity.
     #[inline]
     pub fn new(n: f32) -> Option<Self> {
         if n.is_finite() && n > 0.0 {
@@ -388,7 +388,7 @@ impl NonZeroPositiveF32 {
         }
     }
 
-    /// Creates a new `NonZeroPositiveF32` without checking the value.
+    /// Creates a new [`NonZeroPositiveF32`] without checking the value.
     ///
     /// # Safety
     ///
@@ -404,7 +404,7 @@ impl NonZeroPositiveF32 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF32`.
+    /// Returns the value as a [`FiniteF32`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF32 {
         self.0
@@ -421,15 +421,15 @@ impl PartialEq<f32> for NonZeroPositiveF32 {
 impl_display!(NonZeroPositiveF32);
 impl_approx_32!(NonZeroPositiveF32);
 
-/// An immutable, finite `f64` that is known to be > 0.
+/// An immutable, finite [`f64`] that is known to be > 0.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF64(FiniteF64);
 
 impl NonZeroPositiveF64 {
-    /// Creates a new `NonZeroPositiveF64` if the given value is > 0.
+    /// Creates a new [`NonZeroPositiveF64`] if the given value is > 0.
     ///
-    /// Returns `None` for negative, zero, NaN and infinity.
+    /// Returns [`None`] for negative, zero, NaN and infinity.
     #[inline]
     pub fn new(n: f64) -> Option<Self> {
         if n.is_finite() && n > 0.0 {
@@ -439,7 +439,7 @@ impl NonZeroPositiveF64 {
         }
     }
 
-    /// Creates a new `NonZeroPositiveF64` without checking the value.
+    /// Creates a new [`NonZeroPositiveF64`] without checking the value.
     ///
     /// # Safety
     ///
@@ -455,7 +455,7 @@ impl NonZeroPositiveF64 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF64`.
+    /// Returns the value as a [`FiniteF64`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF64 {
         self.0
@@ -472,18 +472,18 @@ impl PartialEq<f64> for NonZeroPositiveF64 {
 impl_display!(NonZeroPositiveF64);
 impl_approx_64!(NonZeroPositiveF64);
 
-/// An immutable, finite `f32` in a 0..=1 range.
+/// An immutable, finite [`f32`] in a 0..=1 range.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NormalizedF32(FiniteF32);
 
 impl NormalizedF32 {
-    /// A `NormalizedF32` value initialized with zero.
+    /// A [`NormalizedF32`] value initialized with zero.
     pub const ZERO: Self = NormalizedF32(FiniteF32(0.0));
-    /// A `NormalizedF32` value initialized with one.
+    /// A [`NormalizedF32`] value initialized with one.
     pub const ONE: Self = NormalizedF32(FiniteF32(1.0));
 
-    /// Creates a `NormalizedF32` if the given value is in a 0..=1 range.
+    /// Creates a [`NormalizedF32`] if the given value is in a 0..=1 range.
     #[inline]
     pub fn new(n: f32) -> Option<Self> {
         if n.is_finite() && n >= 0.0 && n <= 1.0 {
@@ -493,7 +493,7 @@ impl NormalizedF32 {
         }
     }
 
-    /// Creates a new `NormalizedF32` without checking the value.
+    /// Creates a new [`NormalizedF32`] without checking the value.
     ///
     /// # Safety
     ///
@@ -503,9 +503,9 @@ impl NormalizedF32 {
         NormalizedF32(FiniteF32(n))
     }
 
-    /// Creates a `NormalizedF32` clamping the given value to a 0..=1 range.
+    /// Creates a [`NormalizedF32`] clamping the given value to a 0..=1 range.
     ///
-    /// Returns zero in case of NaN or infinity.
+    /// Returns zero in case of `NaN` or infinity.
     #[inline]
     pub fn new_clamped(n: f32) -> Self {
         if n.is_finite() {
@@ -515,13 +515,13 @@ impl NormalizedF32 {
         }
     }
 
-    /// Creates a `NormalizedF32` by dividing the given value by 255.
+    /// Creates a [`NormalizedF32`] by dividing the given value by 255.
     #[inline]
     pub fn new_u8(n: u8) -> Self {
         NormalizedF32(FiniteF32(f32::from(n) / 255.0))
     }
 
-    /// Creates a `NormalizedF64` by dividing the given value by 65535.
+    /// Creates a [`NormalizedF64`] by dividing the given value by 65535.
     #[inline]
     pub fn new_u16(n: u16) -> Self {
         NormalizedF32(FiniteF32(f32::from(n) / 65535.0))
@@ -533,19 +533,19 @@ impl NormalizedF32 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF32`.
+    /// Returns the value as a [`FiniteF32`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF32 {
         self.0
     }
 
-    /// Returns the value as a `u8`.
+    /// Returns the value as a [`u8`].
     #[inline]
     pub fn to_u8(&self) -> u8 {
         ((self.0).0 * 255.0 + 0.5) as u8
     }
 
-    /// Returns the value as a `u16`.
+    /// Returns the value as a [`u16`].
     #[inline]
     pub fn to_u16(&self) -> u16 {
         ((self.0).0 * 65535.0 + 0.5) as u16
@@ -571,18 +571,18 @@ impl PartialEq<f32> for NormalizedF32 {
 impl_display!(NormalizedF32);
 impl_approx_32!(NormalizedF32);
 
-/// An immutable, finite `f64` in a 0..=1 range.
+/// An immutable, finite [`f64`] in a 0..=1 range.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 #[repr(transparent)]
 pub struct NormalizedF64(FiniteF64);
 
 impl NormalizedF64 {
-    /// A `NormalizedF64` value initialized with zero.
+    /// A [`NormalizedF64`] value initialized with zero.
     pub const ZERO: Self = NormalizedF64(FiniteF64(0.0));
-    /// A `NormalizedF64` value initialized with one.
+    /// A [`NormalizedF64`] value initialized with one.
     pub const ONE: Self = NormalizedF64(FiniteF64(1.0));
 
-    /// Creates a `NormalizedF64` if the given value is in a 0..=1 range.
+    /// Creates a [`NormalizedF64`] if the given value is in a 0..=1 range.
     #[inline]
     pub fn new(n: f64) -> Option<Self> {
         if n >= 0.0 && n <= 1.0 {
@@ -592,7 +592,7 @@ impl NormalizedF64 {
         }
     }
 
-    /// Creates a new `NormalizedF64` without checking the value.
+    /// Creates a new [`NormalizedF64`] without checking the value.
     ///
     /// # Safety
     ///
@@ -602,9 +602,9 @@ impl NormalizedF64 {
         NormalizedF64(FiniteF64(n))
     }
 
-    /// Creates a `NormalizedF64` clamping the given value to a 0..=1 range.
+    /// Creates a [`NormalizedF64`] clamping the given value to a 0..=1 range.
     ///
-    /// Returns zero in case of NaN or infinity.
+    /// Returns zero in case of `NaN` or infinity.
     #[inline]
     pub fn new_clamped(n: f64) -> Self {
         if n.is_finite() {
@@ -614,13 +614,13 @@ impl NormalizedF64 {
         }
     }
 
-    /// Creates a `NormalizedF64` by dividing the given value by 255.
+    /// Creates a [`NormalizedF64`] by dividing the given value by 255.
     #[inline]
     pub fn new_u8(n: u8) -> Self {
         NormalizedF64(FiniteF64(f64::from(n) / 255.0))
     }
 
-    /// Creates a `NormalizedF64` by dividing the given value by 65535.
+    /// Creates a [`NormalizedF64`] by dividing the given value by 65535.
     #[inline]
     pub fn new_u16(n: u16) -> Self {
         NormalizedF64(FiniteF64(f64::from(n) / 65535.0))
@@ -632,19 +632,19 @@ impl NormalizedF64 {
         self.0.get()
     }
 
-    /// Returns the value as a `FiniteF64`.
+    /// Returns the value as a [`FiniteF64`].
     #[inline]
     pub const fn get_finite(&self) -> FiniteF64 {
         self.0
     }
 
-    /// Returns the value as a `u8`.
+    /// Returns the value as a [`u8`].
     #[inline]
     pub fn to_u8(&self) -> u8 {
         ((self.0).0 * 255.0 + 0.5) as u8
     }
 
-    /// Returns the value as a `u16`.
+    /// Returns the value as a [`u16`].
     #[inline]
     pub fn to_u16(&self) -> u16 {
         ((self.0).0 * 65535.0 + 0.5) as u16
