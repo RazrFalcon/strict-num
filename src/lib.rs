@@ -32,7 +32,7 @@ mod serde;
 #[cfg(feature = "approx-eq")]
 pub use float_cmp::{ApproxEq, ApproxEqUlps, Ulps};
 
-use derive_more::Display;
+use derive_more::{Display, LowerExp, UpperExp};
 
 #[cfg(feature = "approx-eq")]
 macro_rules! impl_approx_32 {
@@ -95,7 +95,7 @@ macro_rules! impl_approx_64 {
 /// An immutable, finite [`f32`].
 ///
 /// Unlike [`f32`], implements [`Eq`], [`Ord`] and [`Hash`].
-#[derive(Copy, Clone, Default, Debug, Display)]
+#[derive(Copy, Clone, Default, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct FiniteF32(f32);
 
@@ -177,7 +177,7 @@ impl_approx_32!(FiniteF32);
 /// An immutable, finite [`f64`].
 ///
 /// Unlike [`f64`], implements [`Eq`], [`Ord`] and [`Hash`].
-#[derive(Copy, Clone, Default, Debug, Display)]
+#[derive(Copy, Clone, Default, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct FiniteF64(f64);
 
@@ -257,7 +257,9 @@ impl PartialEq<f64> for FiniteF64 {
 impl_approx_64!(FiniteF64);
 
 /// An immutable, finite [`f32`] that is known to be >= 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display)]
+#[derive(
+    Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display, LowerExp, UpperExp,
+)]
 #[repr(transparent)]
 pub struct PositiveF32(FiniteF32);
 
@@ -310,7 +312,9 @@ impl PartialEq<f32> for PositiveF32 {
 impl_approx_32!(PositiveF32);
 
 /// An immutable, finite [`f64`] that is known to be >= 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display)]
+#[derive(
+    Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display, LowerExp, UpperExp,
+)]
 #[repr(transparent)]
 pub struct PositiveF64(FiniteF64);
 
@@ -363,7 +367,7 @@ impl PartialEq<f64> for PositiveF64 {
 impl_approx_64!(PositiveF64);
 
 /// An immutable, finite [`f32`] that is known to be > 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF32(FiniteF32);
 
@@ -413,7 +417,7 @@ impl PartialEq<f32> for NonZeroPositiveF32 {
 impl_approx_32!(NonZeroPositiveF32);
 
 /// An immutable, finite [`f64`] that is known to be > 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF64(FiniteF64);
 
@@ -463,7 +467,7 @@ impl PartialEq<f64> for NonZeroPositiveF64 {
 impl_approx_64!(NonZeroPositiveF64);
 
 /// An immutable, finite [`f32`] in a 0..=1 range.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct NormalizedF32(FiniteF32);
 
@@ -561,7 +565,7 @@ impl PartialEq<f32> for NormalizedF32 {
 impl_approx_32!(NormalizedF32);
 
 /// An immutable, finite [`f64`] in a 0..=1 range.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display, LowerExp, UpperExp)]
 #[repr(transparent)]
 pub struct NormalizedF64(FiniteF64);
 
@@ -696,6 +700,36 @@ mod tests {
         );
     }
 
+    /// Test that the [`LowerExp`] implementation of [`FiniteF32`] is equivalent to the
+    /// one of [`f32`] for a single example.
+    #[test]
+    fn test_finite_f32_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                FiniteF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f32::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`FiniteF32`] is equivalent to the
+    /// one of [`f32`] for a single example.
+    #[test]
+    fn test_finite_f32_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                FiniteF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f32::consts::PI)),
+        );
+    }
+
     /// Test that the [`Display`] implementation of [`FiniteF64`] is equivalent to the
     /// one of [`f64`].
     #[test]
@@ -708,6 +742,36 @@ mod tests {
                 FiniteF64::new(core::f64::consts::PI).unwrap()
             )),
             second_buffer.format(format_args!("{:.5}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`LowerExp`] implementation of [`FiniteF64`] is equivalent to the
+    /// one of [`f64`] for a single example.
+    #[test]
+    fn test_finite_f64_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                FiniteF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`FiniteF64`] is equivalent to the
+    /// one of [`f64`] for a single example.
+    #[test]
+    fn test_finite_f64_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                FiniteF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f64::consts::PI)),
         );
     }
 
@@ -744,6 +808,36 @@ mod tests {
         );
     }
 
+    /// Test that the [`LowerExp`] implementation of [`PositiveF32`] is equivalent to
+    /// the one of [`f32`] for a single example.
+    #[test]
+    fn test_positive_f32_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                PositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f32::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`PositiveF32`] is equivalent to
+    /// the one of [`f32`] for a single example.
+    #[test]
+    fn test_positive_f32_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                PositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f32::consts::PI)),
+        );
+    }
+
     #[test]
     fn positive_f64() {
         assert_eq!(NonZeroPositiveF32::new(-1.0).map(|n| n.get()), None);
@@ -777,6 +871,36 @@ mod tests {
         );
     }
 
+    /// Test that the [`LowerExp`] implementation of [`PositiveF64`] is equivalent to
+    /// the one of [`f64`] for a single example.
+    #[test]
+    fn test_positive_f64_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                PositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`PositiveF64`] is equivalent to
+    /// the one of [`f64`] for a single example.
+    #[test]
+    fn test_positive_f64_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                PositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f64::consts::PI)),
+        );
+    }
+
     /// Test that the [`Display`] implementation of [`NonZeroPositiveF32`] is equivalent
     /// to the one of [`f32`].
     #[test]
@@ -792,6 +916,36 @@ mod tests {
         );
     }
 
+    /// Test that the [`LowerExp`] implementation of [`NonZeroPositiveF32`] is
+    /// equivalent to the one of [`f32`] for a single example.
+    #[test]
+    fn test_nonzero_positive_f32_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                NonZeroPositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f32::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`NonZeroPositiveF32`] is
+    /// equivalent to the one of [`f32`] for a single example.
+    #[test]
+    fn test_nonzero_positive_f32_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                NonZeroPositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f32::consts::PI)),
+        );
+    }
+
     /// Test that the [`Display`] implementation of [`NonZeroPositiveF64`] is equivalent
     /// to the one of [`f64`].
     #[test]
@@ -804,6 +958,36 @@ mod tests {
                 NonZeroPositiveF64::new(core::f64::consts::PI).unwrap()
             )),
             second_buffer.format(format_args!("{:.5}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`LowerExp`] implementation of [`NonZeroPositiveF64`] is
+    /// equivalent to the one of [`f64`] for a single example.
+    #[test]
+    fn test_nonzero_positive_f64_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                NonZeroPositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`NonZeroPositiveF64`] is
+    /// equivalent to the one of [`f64`] for a single example.
+    #[test]
+    fn test_nonzero_positive_f64_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                NonZeroPositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f64::consts::PI)),
         );
     }
 
@@ -851,6 +1035,36 @@ mod tests {
         );
     }
 
+    /// Test that the [`LowerExp`] implementation of [`NormalizedF32`] is equivalent to
+    /// the one of [`f32`] for a single example.
+    #[test]
+    fn test_normalized_f32_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                NormalizedF32::new(core::f32::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f32::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`NormalizedF32`] is equivalent to
+    /// the one of [`f32`] for a single example.
+    #[test]
+    fn test_normalized_f32_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                NormalizedF32::new(core::f32::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f32::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
     #[test]
     fn norm_f64() {
         assert_eq!(NormalizedF64::new(-0.5), None);
@@ -892,6 +1106,36 @@ mod tests {
                 NormalizedF64::new(core::f64::consts::FRAC_1_SQRT_2).unwrap()
             )),
             second_buffer.format(format_args!("{:.5}", core::f64::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
+    /// Test that the [`LowerExp`] implementation of [`NormalizedF64`] is equivalent to
+    /// the one of [`f64`] for a single example.
+    #[test]
+    fn test_normalized_f64_lower_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:e}",
+                NormalizedF64::new(core::f64::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:e}", core::f64::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
+    /// Test that the [`UpperExp`] implementation of [`NormalizedF64`] is equivalent to
+    /// the one of [`f64`] for a single example.
+    #[test]
+    fn test_normalized_f64_upper_exp() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:E}",
+                NormalizedF64::new(core::f64::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:E}", core::f64::consts::FRAC_1_SQRT_2)),
         );
     }
 
