@@ -29,19 +29,10 @@ Unlike [`f32`] and [`f64`], all these types implement [`Eq`], [`Ord`] and
 #[cfg(feature = "serde")]
 mod serde;
 
-macro_rules! impl_display {
-    ($t:ident) => {
-        impl core::fmt::Display for $t {
-            #[inline]
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-                write!(f, "{}", self.get())
-            }
-        }
-    };
-}
-
 #[cfg(feature = "approx-eq")]
 pub use float_cmp::{ApproxEq, ApproxEqUlps, Ulps};
+
+use derive_more::Display;
 
 #[cfg(feature = "approx-eq")]
 macro_rules! impl_approx_32 {
@@ -104,7 +95,7 @@ macro_rules! impl_approx_64 {
 /// An immutable, finite [`f32`].
 ///
 /// Unlike [`f32`], implements [`Eq`], [`Ord`] and [`Hash`].
-#[derive(Copy, Clone, Default, Debug)]
+#[derive(Copy, Clone, Default, Debug, Display)]
 #[repr(transparent)]
 pub struct FiniteF32(f32);
 
@@ -181,13 +172,12 @@ impl PartialEq<f32> for FiniteF32 {
     }
 }
 
-impl_display!(FiniteF32);
 impl_approx_32!(FiniteF32);
 
 /// An immutable, finite [`f64`].
 ///
 /// Unlike [`f64`], implements [`Eq`], [`Ord`] and [`Hash`].
-#[derive(Copy, Clone, Default, Debug)]
+#[derive(Copy, Clone, Default, Debug, Display)]
 #[repr(transparent)]
 pub struct FiniteF64(f64);
 
@@ -264,11 +254,10 @@ impl PartialEq<f64> for FiniteF64 {
     }
 }
 
-impl_display!(FiniteF64);
 impl_approx_64!(FiniteF64);
 
 /// An immutable, finite [`f32`] that is known to be >= 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display)]
 #[repr(transparent)]
 pub struct PositiveF32(FiniteF32);
 
@@ -318,11 +307,10 @@ impl PartialEq<f32> for PositiveF32 {
     }
 }
 
-impl_display!(PositiveF32);
 impl_approx_32!(PositiveF32);
 
 /// An immutable, finite [`f64`] that is known to be >= 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Display)]
 #[repr(transparent)]
 pub struct PositiveF64(FiniteF64);
 
@@ -372,11 +360,10 @@ impl PartialEq<f64> for PositiveF64 {
     }
 }
 
-impl_display!(PositiveF64);
 impl_approx_64!(PositiveF64);
 
 /// An immutable, finite [`f32`] that is known to be > 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF32(FiniteF32);
 
@@ -423,11 +410,10 @@ impl PartialEq<f32> for NonZeroPositiveF32 {
     }
 }
 
-impl_display!(NonZeroPositiveF32);
 impl_approx_32!(NonZeroPositiveF32);
 
 /// An immutable, finite [`f64`] that is known to be > 0.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
 #[repr(transparent)]
 pub struct NonZeroPositiveF64(FiniteF64);
 
@@ -474,11 +460,10 @@ impl PartialEq<f64> for NonZeroPositiveF64 {
     }
 }
 
-impl_display!(NonZeroPositiveF64);
 impl_approx_64!(NonZeroPositiveF64);
 
 /// An immutable, finite [`f32`] in a 0..=1 range.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
 #[repr(transparent)]
 pub struct NormalizedF32(FiniteF32);
 
@@ -573,11 +558,10 @@ impl PartialEq<f32> for NormalizedF32 {
     }
 }
 
-impl_display!(NormalizedF32);
 impl_approx_32!(NormalizedF32);
 
 /// An immutable, finite [`f64`] in a 0..=1 range.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
 #[repr(transparent)]
 pub struct NormalizedF64(FiniteF64);
 
@@ -672,7 +656,6 @@ impl PartialEq<f64> for NormalizedF64 {
     }
 }
 
-impl_display!(NormalizedF64);
 impl_approx_64!(NormalizedF64);
 
 #[inline]
@@ -688,6 +671,7 @@ fn clamp_f64(min: f64, val: f64, max: f64) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use write_to::WriteTo;
 
     #[test]
     fn finite_f32() {
@@ -695,6 +679,36 @@ mod tests {
         assert_eq!(FiniteF32::new(core::f32::NAN), None);
         assert_eq!(FiniteF32::new(core::f32::INFINITY), None);
         assert_eq!(FiniteF32::new(core::f32::NEG_INFINITY), None);
+    }
+
+    /// Test that the [`Display`] implementation of [`FiniteF32`] is equivalent to the
+    /// one of [`f32`].
+    #[test]
+    fn test_finite_f32_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                FiniteF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f32::consts::PI)),
+        );
+    }
+
+    /// Test that the [`Display`] implementation of [`FiniteF64`] is equivalent to the
+    /// one of [`f64`].
+    #[test]
+    fn test_finite_f64_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                FiniteF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f64::consts::PI)),
+        );
     }
 
     #[test]
@@ -715,6 +729,21 @@ mod tests {
         assert_eq!(NonZeroPositiveF32::new(core::f32::NEG_INFINITY), None);
     }
 
+    /// Test that the [`Display`] implementation of [`PositiveF32`] is equivalent to the
+    /// one of [`f32`].
+    #[test]
+    fn test_postiive_f32_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                PositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f32::consts::PI)),
+        );
+    }
+
     #[test]
     fn positive_f64() {
         assert_eq!(NonZeroPositiveF32::new(-1.0).map(|n| n.get()), None);
@@ -731,6 +760,51 @@ mod tests {
         assert_eq!(NonZeroPositiveF64::new(core::f64::NAN), None);
         assert_eq!(NonZeroPositiveF64::new(core::f64::INFINITY), None);
         assert_eq!(NonZeroPositiveF64::new(core::f64::NEG_INFINITY), None);
+    }
+
+    /// Test that the [`Display`] implementation of [`PositiveF64`] is equivalent to the
+    /// one of [`f64`].
+    #[test]
+    fn test_postiive_f64_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                PositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f64::consts::PI)),
+        );
+    }
+
+    /// Test that the [`Display`] implementation of [`NonZeroPositiveF32`] is equivalent
+    /// to the one of [`f32`].
+    #[test]
+    fn test_nonzero_postiive_f32_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                NonZeroPositiveF32::new(core::f32::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f32::consts::PI)),
+        );
+    }
+
+    /// Test that the [`Display`] implementation of [`NonZeroPositiveF64`] is equivalent
+    /// to the one of [`f64`].
+    #[test]
+    fn test_nonzero_postiive_f64_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                NonZeroPositiveF64::new(core::f64::consts::PI).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f64::consts::PI)),
+        );
     }
 
     #[test]
@@ -762,6 +836,21 @@ mod tests {
         );
     }
 
+    /// Test that the [`Display`] implementation of [`NormalizedF32`] is equivalent to
+    /// the one of [`f32`].
+    #[test]
+    fn test_normalized_f32_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                NormalizedF32::new(core::f32::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f32::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
     #[test]
     fn norm_f64() {
         assert_eq!(NormalizedF64::new(-0.5), None);
@@ -789,5 +878,87 @@ mod tests {
             NormalizedF64::new_clamped(core::f64::NEG_INFINITY).get(),
             0.0
         );
+    }
+
+    /// Test that the [`Display`] implementation of [`NormalizedF64`] is equivalent to
+    /// the one of [`f64`].
+    #[test]
+    fn test_normalized_f64_display() {
+        let mut first_buffer = WriteTo::<10>::default();
+        let mut second_buffer = WriteTo::<10>::default();
+        assert_eq!(
+            first_buffer.format(format_args!(
+                "{:.5}",
+                NormalizedF64::new(core::f64::consts::FRAC_1_SQRT_2).unwrap()
+            )),
+            second_buffer.format(format_args!("{:.5}", core::f64::consts::FRAC_1_SQRT_2)),
+        );
+    }
+
+    pub mod write_to {
+        use core::fmt;
+
+        /// Used to test the various string formatting traits without [`format`].
+        ///
+        /// This is a `#![no_std]` crate and the [`format`] macro needs to be able to
+        /// allocate a [`String`], which is not possible in a `#![no_std]` crate.
+        ///
+        /// This struct works by writing to a [`u8`] buffer whose length is known at
+        /// compile time.
+        ///
+        /// `N` is the size of the buffer.
+        ///
+        /// [Source](https://stackoverflow.com/questions/50200268/\
+        /// how-can-i-use-the-format-macro-in-a-no-std-environment)
+        pub struct WriteTo<const N: usize> {
+            /// The fixed size buffer in which the strings are written.
+            buffer: [u8; N],
+            /// The number of bytes of [`buffer`] that have been used. Guaranteed to be
+            /// not greater than `N`.
+            used: usize,
+        }
+
+        impl<const N: usize> Default for WriteTo<N> {
+            /// Initialize a new instance with an empty buffer.
+            fn default() -> Self {
+                Self {
+                    buffer: [0u8; N],
+                    used: 0,
+                }
+            }
+        }
+
+        impl<const N: usize> fmt::Write for WriteTo<N> {
+            /// Writes the provided string into the [`buffer`][Self::buffer].
+            ///
+            /// If the [`buffer`][Self::buffer] does not have enough space left then
+            /// this method returns an error and nothing is written on the buffer.
+            fn write_str(&mut self, s: &str) -> fmt::Result {
+                let raw_s = s.as_bytes();
+                if raw_s.len() + self.used > N {
+                    return Err(fmt::Error);
+                }
+                let remaining_buf = &mut self.buffer[self.used..];
+                remaining_buf[..raw_s.len()].copy_from_slice(raw_s);
+                self.used += raw_s.len();
+                Ok(())
+            }
+        }
+
+        impl<const N: usize> WriteTo<N> {
+            pub fn as_str(&self) -> &str {
+                unsafe { core::str::from_utf8_unchecked(&self.buffer[..self.used]) }
+            }
+
+            /// Write the provided arguments into the [`buffer`][Self::buffer] and
+            /// return a reference to it.
+            ///
+            /// If the [`buffer`][Self::buffer] does not have enough space left then
+            /// this method returns an error and nothing is written on the buffer.
+            pub fn format(&mut self, args: fmt::Arguments) -> Result<&str, fmt::Error> {
+                fmt::write(self, args)?;
+                Ok(self.as_str())
+            }
+        }
     }
 }

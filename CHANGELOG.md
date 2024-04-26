@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+- Fixed the implementation of `Display` for all types: now the formatting arguments are properly used and the result is identical to the one produced by [`f32`] or [`f64`].
 
 ## [0.2.0]
 ### Added
