@@ -13,6 +13,7 @@ rust-version = "1.56"
 
 [dependencies]
 float-cmp = { version = "0.9", default-features = false, features = ["std"], optional = true }
+derive_more = { version = "0.99", default-features = false, features = ["display"] }
 serde = { version = "1", optional = true }
 
 [dev-dependencies]
